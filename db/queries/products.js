@@ -5,7 +5,7 @@ export async function uploadProduct({title, description, price}){
     INSERT INTO products(title, description, price) VALUES ($1, $2, $3) RETURNING *
     `;
     const{rows:[product]} = await db.query(sql, [title, description, price])
-    console.log(product)
+    // console.log(product)
     return product;
 };
 

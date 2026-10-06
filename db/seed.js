@@ -26,7 +26,7 @@ function getUniqueId(pickedSet, min, max){
 
 async function seed() {
   const user = await createUser("user_one", "password");
-  console.log(user);
+  // console.log(user);
   //seed products 
     //loop through productllist, await upload products for each item in list 
     // console.log(productList)
@@ -38,7 +38,7 @@ async function seed() {
   const order = await createOrder('2026-09-30',"thank you", user.id)
     //loop 5 times call order list 
     const pickedProductId = new Set();
-    const numberOfItems = 4;
+    const numberOfItems = 5;
 
     for ( let i = 0; i < numberOfItems; i++){
       const productId = getUniqueId(pickedProductId, 1, 10)
@@ -46,7 +46,6 @@ async function seed() {
       await orderItems(order.id, productId, randomNum(1,10));
     };
 };
-
 // function randomNum(max, min){
 //     return Math.floor(Math.random() * (max - min + 1)) + min
 // };

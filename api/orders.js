@@ -1,32 +1,14 @@
-import express from "express";
-const app = express();
-export default app;
-import usersRouter from "#api/users"
-import ordersRouter from "#api/orders"
+import {Router} from express
+import requireBody from "#middleware/requireBody";
 
-app.use(express.json());
+const router = Router();
 
-app.use("/users", usersRouter)
-app.use("/orders, ordersRouter")
-
-
-app.use((err, req, res, next)=>{
-    console.error(err);
-    res.status(500).send("something went wrong")
+router.post("/orders", requireBody(["date", "user_id"]), (req, res) => {
+    //use getuserbytoken to verify the user
 })
 
 
-
-// /products router
-
-//     GET /products sends array of all products
-//     GET /products/:id
-//         sends 404 if the product with that id does not exist
-//         sends the specific product
-//     🔒 GET /products/:id/orders
-//         sends 404 if the product with that id does not exist (even if the user is logged in!)
-//         sends an array of all orders made by the user that include this product
-
+export default router
 // /orders router
 
 //     🔒 POST /orders
