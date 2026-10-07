@@ -10,6 +10,7 @@ export default async function getUserFromToken(req, res, next) {
   try {
     const { id } = verifyToken(token);
     const user = await getUserById(id);
+    // console.log(user)
     req.user = user;
     next();
   } catch (e) {

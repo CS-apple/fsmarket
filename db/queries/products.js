@@ -15,6 +15,12 @@ export async function getProductList(PK){
     return product;
 };
 
+export async function getProductById(id){
+  const sql = `SELECT * FROM products WHERE id = $1`;
+  const {rows:[product]} = await db.query(sql, [id])
+  if(!product) return null;
+  return product
+}
 
 export const productList = [
   {

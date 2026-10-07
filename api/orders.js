@@ -1,10 +1,50 @@
-import {Router} from express
+import {Router} from "express"
 import requireBody from "#middleware/requireBody";
+import requireUser from "#middleware/requireUser";
+import requireOrderOwner from "#middleware/requireOrderOwner";
+import { 
+        createOrder,
+        createOrderItems,
+        getOrdersFromUser, 
+        getProductsInOrder
+        } from "#db/queries/orders";
+import { getProductById } from "#db/queries/products";
 
 const router = Router();
 
-router.post("/orders", requireBody(["date", "user_id"]), (req, res) => {
-    //use getuserbytoken to verify the user
+router.use(requireUser)
+
+router.post("/", requireBody(["date"]), async (req, res) => {
+    // res.send("user from token with body ")
+    const { date, note = null } = req.body
+    const newOrder = await createOrder({date, note, userId:req.user.id})
+    res.status(201).json(newOrder)
+
+})
+
+router.get("/", async (req,res)=>{
+const userOrderList = await getOrdersFromUser(req.user.id)
+if(userOrderList.length === 0)
+res.status(200).json(userOrderList)
+})
+
+router.get("/:id", requireOrderOwner, async (req,res)=>{
+res.status(200).json(req.order)
+})
+
+router.post("/:id/products", requireOrderOwner, requireBody(["productId", "quantity"]), async (req,res)=>{
+    const {id} = req.params;
+    const {productId, quantity} = req.body
+    const product =  await getProductById(productId)
+    if(!product) return res.status(400).send("productId references a product that does not exist");
+    const orderItem = await createOrderItems({orderId:id, productId:product.id, quantity:quantity })
+    res.status(201).json(orderItem);
+})
+
+router.get("/:id/products", requireOrderOwner, async (req,res)=>{
+const {id} = req.params
+const productsInOrder = await getProductsInOrder(id)
+res.status(200).json(productsInOrder)
 })
 
 

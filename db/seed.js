@@ -1,7 +1,7 @@
 import db from "#db/client";
 import { createUser } from "#db/queries/users";
 import { uploadProduct, getProductList, productList } from "#db/queries/products";
-import { createOrder, orderItems} from "#db/queries/orders";
+import { createOrder, createOrderItems} from "#db/queries/orders";
 
 await db.connect();
 await seed();
@@ -35,7 +35,7 @@ async function seed() {
     await uploadProduct(product)
   }
   //create order, with date, note, userID
-  const order = await createOrder('2026-09-30',"thank you", user.id)
+  const order = await createOrder({date:'2026-09-30',note:"thank you", userId:user.id})
     //loop 5 times call order list 
     const pickedProductId = new Set();
     const numberOfItems = 5;
@@ -43,7 +43,7 @@ async function seed() {
     for ( let i = 0; i < numberOfItems; i++){
       const productId = getUniqueId(pickedProductId, 1, 10)
 
-      await orderItems(order.id, productId, randomNum(1,10));
+      await createOrderItems({orderId:order.id, productId:productId, quantitiy:randomNum(1,10)});
     };
 };
 // function randomNum(max, min){
